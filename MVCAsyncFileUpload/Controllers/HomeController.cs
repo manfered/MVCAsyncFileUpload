@@ -35,6 +35,7 @@ namespace MVCAsyncFileUpload.Controllers
         {
             int count = 0;
             string FileName = string.Empty;
+            string resultStr = string.Empty;
             if (files != null)
             {
                 foreach (var file in files)
@@ -51,15 +52,26 @@ namespace MVCAsyncFileUpload.Controllers
                             FileName = Path.GetFileNameWithoutExtension(file.FileName) + "_" + Guid.NewGuid() + Path.GetExtension(file.FileName);
                             path = Path.Combine(Server.MapPath("~/" + StorageDirectory), FileName);
                         }
-                        file.SaveAs(path);
-                        count++;
+
+                        try
+                        {
+                            file.SaveAs(path);
+                            count++;
+                            resultStr = "Successfully " + count + " file(s) uploaded";
+                        }
+                        catch (Exception ex)
+                        {
+                            //exception message
+                            resultStr = ex.Message;
+                        }
+
                     }
                 }
             }
 
             //return new JsonResult { Data = "../UploadedFiles/" + FileName };
             //return new JsonResult { Data = "Successfully " + count + " file(s) uploaded" };
-            return Json(new { Data = "Successfully " + count + " file(s) uploaded", src = "../" + StorageDirectory + "/" + FileName, fileName = FileName }, JsonRequestBehavior.AllowGet);
+            return Json(new { Data = resultStr, src = "../" + StorageDirectory + "/" + FileName, fileName = FileName }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -74,15 +86,22 @@ namespace MVCAsyncFileUpload.Controllers
         public ActionResult AsyncDelete(string deletFileName)
         {
             string fullPath = Path.Combine(Server.MapPath("~/" + StorageDirectory), deletFileName);
+            string resultStr = string.Empty;
             if (System.IO.File.Exists(fullPath))
             {
-                System.IO.File.Delete(fullPath);
+                try
+                {
+                    System.IO.File.Delete(fullPath);
+                    resultStr = "Successfully 1 file deleted";
+                }
+                catch (Exception ex)
+                {
+                    resultStr = ex.Message;
+                }
+                
             }
-
-            var count = 1;
-
-
-            return Json(new { Data = "Successfully " + count + " file(s) deleted", deleteFileName = deletFileName }, JsonRequestBehavior.AllowGet);
+                        
+            return Json(new { Data = resultStr, deleteFileName = deletFileName }, JsonRequestBehavior.AllowGet);
             //return new JsonResult { Data = "Successfully " + count + " file(s) uploaded" };
         }
     }
