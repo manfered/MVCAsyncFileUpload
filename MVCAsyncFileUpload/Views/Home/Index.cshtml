@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "MVCAyncFileUpload Home";
+}
+
+<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">MVCAyncFileUpload is a free Asp.NET MVC asynchronous file upload. 
+                The app helps us upload wanted files asynchronously to the server with preview and delete uploaded files,
+                with jQuery Ajax methods app provides the ability to have upload progress bar, alerts, status, accepted file formats, preview of upload files and
+                image files preview.
+                The Asp.Net controller returns a JSON as a result of file upload/delete.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>ASP.NET MVC</h2>
+        <p>
+            The upload action Asp.Net controller checks if the uploaded filename exits, if the filename exits actions adds randome charachter sequence ad the end of the filename to prevent overwriting.
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>JQuery/Ajax</h2>
+        <p>JQuery helps to build active upload progress bar and async upload.
+        Ajax async methods provide sending data to asp.net controllers for upload and delete</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Free to use</h2>
+        <p>License free project.
+        and example has benn provided below.</p>
+    </div>
+</div>
+
+
+@using (Ajax.BeginForm("AsyncDelete", "Delete", new AjaxOptions() { HttpMethod = "POST" }, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row" id="uploadResultBox">
+        <input type="hidden" name="deletFileName" id="deletFileName" />
+    </div>
+}
+
+@using (Ajax.BeginForm("AsyncUpload", "Upload", new AjaxOptions() { HttpMethod = "POST" }, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="row" id="uploadFormBox">
+        <div class="col-xs-12">
+            <label for="fileUploadInput" class="custom-file-upload">
+                Upload File
+            </label>
+            <input id="fileUploadInput" type="file" name="files" />
+        </div>
+    </div>
+
+
+    <div class="form-group" id="uploadProgressBox">
+        <div class="progress col-md-2" id="uploadProgressBar">
+            <div class="progress-bar">0%</div>
+        </div>
+        <div id="fileUploadStatus"></div>
+    </div>
+
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/UploadScript.js"></script>
+}
